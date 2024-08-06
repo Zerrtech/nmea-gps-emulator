@@ -58,22 +58,22 @@ class Menu:
 
             # TODO: take lat/long pair of points and determine heading and speed
             # new_head, new_speed = heading_speed_input()
-            new_head = 90.0
-            new_speed = 10.5
+            # new_head = 90.0
+            # new_speed = 10.5
 
-            # Get all 'nmea_srv*' telnet server threads
-            thread_list = [thread for thread in threading.enumerate() if thread.name.startswith('nmea_srv')]
-            if thread_list:
-                for thr in thread_list:
-                    # Update speed and heading
-                    # a = time.time()
-                    thr.set_heading(new_head)
-                    thr.set_speed(new_speed)
-                    # print(time.time() - a)
-            else:
-                # Set targeted head and speed without connected clients
-                self.nmea_obj.heading_targeted = new_head
-                self.nmea_obj.speed_targeted = new_speed
+            # # Get all 'nmea_srv*' telnet server threads
+            # thread_list = [thread for thread in threading.enumerate() if thread.name.startswith('nmea_srv')]
+            # if thread_list:
+            #     for thr in thread_list:
+            #         # Update speed and heading
+            #         # a = time.time()
+            #         thr.set_heading(new_head)
+            #         thr.set_speed(new_speed)
+            #         # print(time.time() - a)
+            # else:
+            #     # Set targeted head and speed without connected clients
+            #     self.nmea_obj.heading_targeted = new_head
+            #     self.nmea_obj.speed_targeted = new_speed
 
 
     def nmea_serial(self):
