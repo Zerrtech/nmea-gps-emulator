@@ -24,44 +24,15 @@ def position_input() -> dict:
     The function asks for position and checks validity of entry data.
     Function returns position.
     """
-    while True:
-        try:
-            print('\n### Enter unit position (format - 5430N 01920E): ###')
-            try:
-                position_data = input('>>> ')
-            except KeyboardInterrupt:
-                print('\n\n*** Closing the script... ***\n')
-                sys.exit()
-            if position_data == '':
-                # Default position
-                position_dict = {
-                    'latitude_value': '5430.000',
-                    'latitude_direction': 'N',
-                    'longitude_value': '01920.000',
-                    'longitude_direction': 'E',
-                }
-                return position_dict
-            position_regex_pattern = re.compile(r'''^(
-                ([0-8]\d[0-5]\d|9000)                               # Latitude
-                (N|S)
-                \s?
-                (([0-1][0-7]\d[0-5]\d)|(0[0-9]\d[0-5]\d)|18000)     # Longitude
-                (E|W)
-                )$''', re.VERBOSE)
-            mo = position_regex_pattern.fullmatch(position_data)
-            if mo:
-                # Returns position data
-                position_dict = {
-                    'latitude_value': f'{float(mo.group(2)):08.3f}',
-                    'latitude_direction': mo.group(3),
-                    'longitude_value': f'{float(mo.group(4)):09.3f}',
-                    'longitude_direction': mo.group(7),
-                }
-                return position_dict
-            print('\nError: Wrong entry! Try again.')
-        except KeyboardInterrupt:
-            print('\n\n*** Closing the script... ***\n')
-            sys.exit()
+    # Default position
+    position_dict = {
+        'latitude_value': '4361.500',
+        'latitude_direction': 'N',
+        'longitude_value': '11620.230',
+        'longitude_direction': 'W',
+    }
+    return position_dict
+
 
 
 def ip_port_input(option: str) -> tuple:
@@ -133,49 +104,15 @@ def heading_input() -> float:
     """
     The function asks for the unit's course.
     """
-    while True:
-        try:
-            print('\n### Enter unit course - range 000-359 [090]: ###')
-            try:
-                heading_data = input('>>> ')
-            except KeyboardInterrupt:
-                print('\n\n*** Closing the script... ***\n')
-                sys.exit()
-            if heading_data == '':
-                return 90.0
-            heading_regex_pattern = r'(3[0-5]\d|[0-2]\d{2}|\d{1,2})'
-            mo = re.fullmatch(heading_regex_pattern, heading_data)
-            if mo:
-                return float(mo.group())
-        except KeyboardInterrupt:
-            print('\n\n*** Closing the script... ***\n')
-            sys.exit()
+    return 90.0
+
 
 
 def speed_input() -> float:
     """
     The function asks for the unit's speed.
     """
-    while True:
-        try:
-            print('\n### Enter unit speed in knots - range 0-999 [10.5]: ###')
-            try:
-                speed_data = input('>>> ')
-            except KeyboardInterrupt:
-                print('\n\n*** Closing the script... ***\n')
-                sys.exit()
-            if speed_data == '':
-                return 10.500
-            speed_regex_pattern = r'(\d{1,3}(\.\d)?)'
-            mo = re.fullmatch(speed_regex_pattern, speed_data)
-            if mo:
-                match = mo.group()
-                if match.startswith('0') and match != '0':
-                    match = match.lstrip('0')
-                return float(match)
-        except KeyboardInterrupt:
-            print('\n\n*** Closing the script... ***\n')
-            sys.exit()
+    return 10.500
 
 
 def heading_speed_input() -> tuple:
@@ -223,7 +160,9 @@ def serial_config_input() -> dict:
     serial_set = {'bytesize': 8,
                   'parity': 'N',
                   'stopbits': 1,
-                  'timeout': 1}
+                  'timeout': 1,
+                  'port': '/dev/ttyUSB0',
+                  'baudrate': '115200'}
 
     # List of available serial ports.
     ports_connected = serial.tools.list_ports.comports(include_links=False)
@@ -232,49 +171,11 @@ def serial_config_input() -> dict:
     print('\n### Connected Serial Ports: ###')
     for port in sorted(ports_connected):
         print(f'   - {port}')
-    # Check OS platform.
-    platform_os = platform.system()
     # Asks for serial port name and checks the name validity.
-    while True:
-        if platform_os.lower() == 'linux':
-            print('\n### Choose Serial Port [/dev/ttyUSB0]: ###')
-            try:
-                serial_set['port'] = input('>>> ')
-            except KeyboardInterrupt:
-                print('\n\n*** Closing the script... ***\n')
-                sys.exit()
-            if serial_set['port'] == '':
-                serial_set['port'] = '/dev/ttyUSB0'
-            if serial_set['port'] in ports_connected_names:
-                break
-        elif platform_os.lower() == 'windows':
-            print('\n### Choose Serial Port [COM1]: ###')
-            try:
-                serial_set['port'] = input('>>> ')
-            except KeyboardInterrupt:
-                print('\n\n*** Closing the script... ***\n')
-                sys.exit()
-            if serial_set['port'] == '':
-                serial_set['port'] = 'COM1'
-            if serial_set['port'] in ports_connected_names:
-                break
-        print(f'\nError: \'{serial_set["port"]}\' is wrong port\'s name.')
 
-    # Serial port settings:
-    baudrate_list = ['300', '600', '1200', '2400', '4800', '9600', '14400',
-                     '19200', '38400', '57600', '115200', '128000']
-    while True:
-        print('\n### Enter serial baudrate [9600]: ###')
-        try:
-            serial_set['baudrate'] = input('>>> ')
-        except KeyboardInterrupt:
-            print('\n\n*** Closing the script... ***\n')
-            sys.exit()
-        if serial_set['baudrate'] == '':
-            serial_set['baudrate'] = 9600
-        if str(serial_set['baudrate']) in baudrate_list:
-            break
-        print(f'\n*** Error: \'{serial_set["baudrate"]}\' is wrong port\'s baudrate. ***')
+    if serial_set['port'] not in ports_connected_names:
+        raise Exception("Port not found")
+
     return serial_set
 
 
