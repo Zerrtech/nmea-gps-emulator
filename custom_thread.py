@@ -117,13 +117,7 @@ class NmeaSrvThread(threading.Thread):
             self.heading = heading
 
     def run(self):
-        total_pairs = len(hs_pairs)
-        hs_count = 0
         while True:
-            hs = hs_pairs[hs_count % total_pairs]
-            self.set_heading(hs[0])
-            self.set_speed(hs[1])
-            hs_count += 1
             # calculate the
             timer_start = time.perf_counter()
             with self._lock:
@@ -186,7 +180,14 @@ class NmeaSerialThread(NmeaSrvThread):
                     f'{self.serial_config["bytesize"]}{self.serial_config["parity"]}{self.serial_config["stopbits"]}'
                 )
                 print("Sending NMEA data...")
+                total_pairs = len(hs_pairs)
+                hs_count = 0                
                 while True:
+                    hs = hs_pairs[hs_count % total_pairs]
+                    self.set_heading(hs[0])
+                    self.set_speed(hs[1])
+                    print("setting heading to ", hs[0], " speed to ", hs[1])
+                    hs_count += 1                    
                     timer_start = time.perf_counter()
                     with self._lock:
                         # Nmea object speed and heading update
