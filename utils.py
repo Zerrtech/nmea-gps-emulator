@@ -26,9 +26,9 @@ def position_input() -> dict:
     """
     # Default position
     position_dict = {
-        'latitude_value': '4337.39243',
+        'latitude_value': '4846.585',
         'latitude_direction': 'N',
-        'longitude_value': '11612.607',
+        'longitude_value': '10140.319',
         'longitude_direction': 'W',
     }
     return position_dict
