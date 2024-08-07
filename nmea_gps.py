@@ -143,7 +143,7 @@ class NmeaMsg:
         head_current = self.heading
         turn_angle = head_target - head_current
         # Heading increment in each position update
-        head_increment = 3
+        head_increment = 360
         # Immediate change of course when the increment <= turn_angle
         if abs(turn_angle) <= head_increment:
             head_current = head_target

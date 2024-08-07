@@ -5,6 +5,7 @@ import socket
 import re
 import sys
 import uuid
+from coords import get_hs, get_hs_back
 
 import serial.tools.list_ports
 
@@ -59,7 +60,7 @@ for pi, p in enumerate(path, start=1):
     # compute heading between 2 points
     # compute speed
 
-hs_pairs = [
+hs_pairs1 = [
     (90.0, 10.0),
     (90.0, 10.0),
     (90.0, 10.0),
@@ -90,6 +91,8 @@ hs_pairs = [
     (90.0, 10.0),
     (90.0, 10.0),
 ]
+
+hs_pairs = get_hs_back()
 
 
 class NmeaSrvThread(threading.Thread):
@@ -183,6 +186,8 @@ class NmeaSerialThread(NmeaSrvThread):
                 total_pairs = len(hs_pairs)
                 hs_count = 0                
                 while True:
+                    if hs_count == total_pairs:
+                        break
                     hs = hs_pairs[hs_count % total_pairs]
                     self.set_heading(hs[0])
                     self.set_speed(hs[1])
