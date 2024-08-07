@@ -188,7 +188,7 @@ class NmeaMsg:
         speed_current = self.speed
         speed_diff = speed_target - speed_current
         # Heading increment in each position update
-        speed_increment = 3
+        speed_increment = 300
         # Immediate change of course when the increment <= turn_angle
         if abs(speed_diff) <= speed_increment:
             speed_current = speed_target
