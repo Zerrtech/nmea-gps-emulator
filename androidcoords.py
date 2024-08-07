@@ -58,3 +58,26 @@ coords = [
 (-116.20733552247565,43.618903096905434,215.59618,1723053336012,13.888889),
 (-116.20742322168374,43.618806778316255,213.48415,1723053337011,13.888889),
 ]
+
+def get_hst():
+    # g = Geod(ellps='WGS84')
+    hs = []
+    for ci in range(len(coords)-1):
+        prev = coords[ci]
+        curr = coords[ci+1]
+
+        # print(out)
+        # find distace between points
+        # find heading between points
+        # convert to knots
+        speed = prev[4] * 1.943844
+        mph = (prev[4] * 0.000621371) * 3600
+        time_in_secs = (curr[3] - prev[3]) / 1000
+        heading = prev[2]
+        # heading = (heading + 360) % 360
+        hs.append((heading, speed, time_in_secs))
+        print("speed knots:", speed, " mph:", mph, " heading:", heading, " time in sec:", time_in_secs)
+    return hs
+
+if __name__ == '__main__':
+    get_hst()

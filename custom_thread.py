@@ -6,6 +6,7 @@ import re
 import sys
 import uuid
 from coords import get_hs, get_hs_back
+from androidcoords import get_hst
 
 import serial.tools.list_ports
 
@@ -92,7 +93,8 @@ hs_pairs1 = [
     (90.0, 10.0),
 ]
 
-hs_pairs = get_hs_back()
+# hs_pairs = get_hs_back()
+hs_pairs = get_hst()
 
 
 class NmeaSrvThread(threading.Thread):
@@ -191,6 +193,7 @@ class NmeaSerialThread(NmeaSrvThread):
                     hs = hs_pairs[hs_count % total_pairs]
                     self.set_heading(hs[0])
                     self.set_speed(hs[1])
+                    time_in_sec = hs[2]
                     print("setting heading to ", hs[0], " speed to ", hs[1])
                     hs_count += 1                    
                     timer_start = time.perf_counter()
@@ -206,7 +209,7 @@ class NmeaSerialThread(NmeaSrvThread):
                         for nmea in nmea_list:
                             ser.write(str.encode(nmea))
                             time.sleep(0.05)
-                    time.sleep(1 - (time.perf_counter() - timer_start))
+                    time.sleep(time_in_sec - (time.perf_counter() - timer_start))
         except serial.serialutil.SerialException as error:
             # Remove error number from output [...]
             error_formatted = (
